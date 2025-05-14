@@ -9,18 +9,13 @@ public class DashboardController {
 
     @GetMapping("/user/dashboard")
     public String showUserDashboard(HttpSession session) {
-        // Tu peux ajouter une vérification de session ici si tu veux
-        return "user/dashboard"; // Correspond à /WEB-INF/views/user/dashboard.jsp
+        return "user/dashboard";
     }
 
-    @GetMapping("/admin/dashboard")
-    public String showAdminDashboard() {
-        return "admin/dashboard";
-    }
+    // ❌ Supprimer cette méthode
+    // @GetMapping("/teacher/dashboard")
+    // public String showTeacherDashboard() {
+    //     return "teacher/dashboard";
+    // }
 
-    @GetMapping("/teacher/dashboard")
-    public String showTeacherDashboard() {
-        return "teacher/dashboard";
-    }
 }
-

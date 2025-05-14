@@ -1,16 +1,15 @@
 package com.devoir.devoir.controller;
 
-import com.devoir.devoir.model.Cours;
+import com.devoir.devoir.model.Course;
 import com.devoir.devoir.model.Devoir;
-import com.devoir.devoir.repository.CoursRepository;
+import com.devoir.devoir.repository.CourseRepository;
 import com.devoir.devoir.repository.DevoirRepository;
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -21,37 +20,45 @@ public class DevoirController {
     private DevoirRepository devoirRepository;
 
     @Autowired
-    private CoursRepository coursRepository;
+    private CourseRepository courseRepository;
 
-    // Afficher le formulaire
-    @GetMapping("/create")
-    public String showCreateForm(Model model, HttpSession session) {
-        // TODO: filtrer les cours selon l'enseignant connecté si nécessaire
-        List<Cours> coursList = coursRepository.findAll();
-        model.addAttribute("coursList", coursList);
-        return "teacher/create_devoir";
+    @GetMapping
+    public String listDevoirs(Model model) {
+        List<Devoir> devoirs = devoirRepository.findAll();
+        model.addAttribute("devoirs", devoirs);
+        return "devoir/list";
     }
 
-    // Soumettre le formulaire
-    @PostMapping("/create")
-    public String createDevoir(@RequestParam String titre,
-                               @RequestParam String description,
-                               @RequestParam String deadline,
-                               @RequestParam Long coursId,
-                               HttpSession session) {
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("devoir", new Devoir());
+        model.addAttribute("courses", courseRepository.findAll());
+        return "devoir/add";
+    }
 
-        Cours cours = coursRepository.findById(coursId).orElse(null);
-        if (cours == null) {
-            return "redirect:/teacher/dashboard?error=cours";
-        }
-
-        Devoir devoir = new Devoir();
-        devoir.setTitre(titre);
-        devoir.setDescription(description);
-        devoir.setDateLimite(LocalDate.parse(deadline));
-        devoir.setCours(cours);
-
+    @PostMapping("/save")
+    public String saveDevoir(@ModelAttribute Devoir devoir) {
         devoirRepository.save(devoir);
-        return "redirect:/teacher/dashboard";
+        return "redirect:/devoirs";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Devoir devoir = devoirRepository.findById(id).orElseThrow();
+        model.addAttribute("devoir", devoir);
+        model.addAttribute("courses", courseRepository.findAll());
+        return "devoir/edit";
+    }
+
+    @PostMapping("/update")
+    public String updateDevoir(@ModelAttribute Devoir devoir) {
+        devoirRepository.save(devoir);
+        return "redirect:/devoirs";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteDevoir(@PathVariable Long id) {
+        devoirRepository.deleteById(id);
+        return "redirect:/devoirs";
     }
 }

@@ -18,7 +18,7 @@ public class Devoir {
 
     @ManyToOne
     @JoinColumn(name = "cours_id")
-    private Cours cours;
+    private Course course; // <-- Correction ici
 
     // Getters et Setters
     public Long getId() { return id; }
@@ -33,6 +33,6 @@ public class Devoir {
     public LocalDate getDateLimite() { return dateLimite; }
     public void setDateLimite(LocalDate dateLimite) { this.dateLimite = dateLimite; }
 
-    public Cours getCours() { return cours; }
-    public void setCours(Cours cours) { this.cours = cours; }
+    public Course getCourse() { return course; } // <-- Correction ici
+    public void setCourse(Course course) { this.course = course; } // <-- Correction ici
 }

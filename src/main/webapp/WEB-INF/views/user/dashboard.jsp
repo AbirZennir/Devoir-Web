@@ -1,105 +1,69 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
-<html>
+<jsp:include page="/WEB-INF/views/components/sidebar.jsp" />
+<jsp:include page="/WEB-INF/views/components/header.jsp" />
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <title>Tableau de bord - Étudiant</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #eef1f7;
-            padding: 20px;
-        }
-
-        h2 {
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ccc;
-        }
-
-        th {
-            background-color: #3f51b5;
-            color: white;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .status {
-            font-weight: bold;
-        }
-
-        .accepted { color: green; }
-        .rejected { color: red; }
-        .pending { color: orange; }
-    </style>
+    <meta charset="UTF-8">
+    <title>Tableau de bord Étudiant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<form action="${pageContext.request.contextPath}/logout" method="post">
-    <button class="btn btn-danger" type="submit">Déconnexion</button>
-</form>
+<body class="bg-light">
+<div class="container py-4">
+    <h2>Bonjour, ${user.firstName} ${user.lastName}</h2>
 
-    <h2>Mes Cours Disponibles</h2>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Devoirs à faire</h5>
+                    <p class="card-text fs-4">${assignmentsToDo}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Devoirs soumis</h5>
+                    <p class="card-text fs-4">${submittedAssignments}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Cours inscrits</h5>
+                    <p class="card-text fs-4">${enrolledCourses}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <table>
-        <tr>
-            <th>Nom du cours</th>
-            <th>Description</th>
-            <th>Statut</th>
-            <th>Action</th>
-        </tr>
-        <c:forEach var="matiere" items="${cours}">
+    <div class="mt-5">
+        <h4>Devoirs récents</h4>
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <td>${matiere.nom}</td>
-                <td>${matiere.description}</td>
-
-                <c:set var="status" value="${statuses[matiere.id]}" />
-
-                <td class="status">
-                    <c:choose>
-                        <c:when test="${status == 'ACCEPTED'}"><span class="accepted">Accepté</span></c:when>
-                        <c:when test="${status == 'REJECTED'}"><span class="rejected">Refusé</span></c:when>
-                        <c:when test="${status == 'PENDING'}"><span class="pending">En attente</span></c:when>
-                        <c:otherwise><span>—</span></c:otherwise>
-                    </c:choose>
-                </td>
-
-                <td>
-                    <c:choose>
-                        <c:when test="${empty status || status == 'REJECTED'}">
-                            <form method="post" action="/user/request-course">
-                                <input type="hidden" name="courseId" value="${matiere.id}" />
-                                <button type="submit" class="btn">Rejoindre</button>
-                            </form>
-                        </c:when>
-                        <c:otherwise>
-                            <button class="btn" disabled>Demande envoyée</button>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
+                <th>Titre</th>
+                <th>Cours</th>
+                <th>Échéance</th>
+                <th>Statut</th>
             </tr>
-        </c:forEach>
-    </table>
-
+            </thead>
+            <tbody>
+            <c:forEach var="d" items="${assignments}">
+                <tr>
+                    <td>${d.title}</td>
+                    <td>${d.course.name}</td>
+                    <td>${d.deadline}</td>
+                    <td><span class="badge bg-${d.submitted ? 'success' : 'warning'}">${d.submitted ? 'Soumis' : 'À faire'}</span></td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
