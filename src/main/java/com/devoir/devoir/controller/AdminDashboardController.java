@@ -35,3 +35,21 @@ public class AdminDashboardController {
         return "admin/dashboard";
     }
 }
+// Simulation temporaire en attendant la requête SQL correcte dans le Repository
+List<Integer> assignmentsByMonth = Arrays.asList(5, 2, 4, 3, 1, 0);
+List<Integer> gradesByMonth = Arrays.asList(3, 1, 2, 4, 0, 1);
+
+// Replace with actual data retrieval from repositories
+List<Integer> assignmentsByMonth = assignmentRepo.countByMonth();
+List<Integer> gradesByMonth = gradeRepo.countByMonth();
+
+// Add error handling for potential null values
+if (assignmentsByMonth == null) {
+    assignmentsByMonth = new ArrayList<>();
+}
+if (gradesByMonth == null) {
+    gradesByMonth = new ArrayList<>();
+}
+
+model.addAttribute("assignmentsByMonth", assignmentsByMonth);
+model.addAttribute("gradesByMonth", gradesByMonth);
