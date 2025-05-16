@@ -1,4 +1,3 @@
-// AdminDashboardController.java
 package com.devoir.devoir.controller;
 
 import com.devoir.devoir.repository.*;
@@ -8,15 +7,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class AdminDashboardController {
-    @Autowired private UserRepository userRepo;
-    @Autowired private AssignmentRepository assignmentRepo;
-    @Autowired private GradeRepository gradeRepo;
-    @Autowired private CourseRepository courseRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private AssignmentRepository assignmentRepo;
+
+    @Autowired
+    private GradeRepository gradeRepo;
+
+    @Autowired
+    private CourseRepository courseRepo;
 
     @GetMapping("/admin/dashboard")
     public String dashboard(Model model, HttpSession session) {
@@ -25,9 +33,22 @@ public class AdminDashboardController {
         model.addAttribute("courseCount", courseRepo.count());
         model.addAttribute("gradeCount", gradeRepo.count());
 
-        // Simulation temporaire en attendant la requête SQL correcte dans le Repository
+        // Simulation temporaire
         List<Integer> assignmentsByMonth = Arrays.asList(5, 2, 4, 3, 1, 0);
         List<Integer> gradesByMonth = Arrays.asList(3, 1, 2, 4, 0, 1);
+
+        // Alternative avec récupération depuis repo si implémenté
+        /*
+        List<Integer> assignmentsByMonth = assignmentRepo.countByMonth();
+        List<Integer> gradesByMonth = gradeRepo.countByMonth();
+
+        if (assignmentsByMonth == null) {
+            assignmentsByMonth = new ArrayList<>();
+        }
+        if (gradesByMonth == null) {
+            gradesByMonth = new ArrayList<>();
+        }
+        */
 
         model.addAttribute("assignmentsByMonth", assignmentsByMonth);
         model.addAttribute("gradesByMonth", gradesByMonth);
@@ -35,21 +56,3 @@ public class AdminDashboardController {
         return "admin/dashboard";
     }
 }
-// Simulation temporaire en attendant la requête SQL correcte dans le Repository
-List<Integer> assignmentsByMonth = Arrays.asList(5, 2, 4, 3, 1, 0);
-List<Integer> gradesByMonth = Arrays.asList(3, 1, 2, 4, 0, 1);
-
-// Replace with actual data retrieval from repositories
-List<Integer> assignmentsByMonth = assignmentRepo.countByMonth();
-List<Integer> gradesByMonth = gradeRepo.countByMonth();
-
-// Add error handling for potential null values
-if (assignmentsByMonth == null) {
-    assignmentsByMonth = new ArrayList<>();
-}
-if (gradesByMonth == null) {
-    gradesByMonth = new ArrayList<>();
-}
-
-model.addAttribute("assignmentsByMonth", assignmentsByMonth);
-model.addAttribute("gradesByMonth", gradesByMonth);

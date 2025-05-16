@@ -17,7 +17,6 @@ public class LoginController {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // ✅ Fusion des 3 méthodes GET
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "logout", required = false) String logout,
                                  @RequestParam(value = "msg", required = false) String msg,
@@ -42,8 +41,12 @@ public class LoginController {
 
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             if (user.getRole().equalsIgnoreCase(role)) {
+                // ✅ Enregistrer l'utilisateur connecté dans la session
+                session.setAttribute("userId", user.getId());
+                session.setAttribute("userRole", user.getRole());
                 session.setAttribute("loggedInUser", user);
 
+                // ✅ Rediriger vers le tableau de bord selon le rôle
                 switch (role.toUpperCase()) {
                     case "ADMIN":
                         return "redirect:/admin/dashboard";
@@ -60,5 +63,11 @@ public class LoginController {
 
         model.addAttribute("error", "Email ou mot de passe incorrect.");
         return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login?logout=true";
     }
 }

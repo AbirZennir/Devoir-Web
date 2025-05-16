@@ -1,35 +1,58 @@
 package com.devoir.devoir.controller;
 
+import com.devoir.devoir.model.Assignment;
+import com.devoir.devoir.model.User;
 import com.devoir.devoir.repository.AssignmentRepository;
 import com.devoir.devoir.repository.CourseRepository;
 import com.devoir.devoir.repository.UserRepository;
-import com.devoir.devoir.model.User;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.util.Optional;
+import java.util.List;
 
 @Controller
+@RequestMapping("/teacher")
 public class TeacherDashboardController {
-    @Autowired private AssignmentRepository assignmentRepo;
-    @Autowired private CourseRepository courseRepo;
-    @Autowired private UserRepository userRepo;
 
-    @GetMapping("/teacher/dashboard")
-    public String dashboard(Model model, Principal principal) {
-        Optional<User> optionalUser = userRepo.findByEmail(principal.getName());
-        if (optionalUser.isPresent()) {
-            Long teacherId = optionalUser.get().getId();
-            model.addAttribute("courseCount", courseRepo.countByTeacher_Id(teacherId)); // plus précis
-            model.addAttribute("activeAssignments", assignmentRepo.count());
-            model.addAttribute("studentCount", userRepo.countByRole("STUDENT"));
-            model.addAttribute("assignments", assignmentRepo.findByCourse_Teacher_Id(teacherId));
-            return "teacher/dashboard";
-        } else {
-            return "redirect:/login"; // utilisateur non trouvé
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model, HttpSession session, Principal principal) {
+        Long teacherId = (Long) session.getAttribute("userId");
+
+        if (teacherId == null) {
+            return "redirect:/login?msg=Session expirée, veuillez vous reconnecter";
         }
+
+        User user = userRepository.findById(teacherId).orElse(null);
+        if (user == null) {
+            return "redirect:/login?msg=Utilisateur introuvable";
+        }
+
+        long courseCount = courseRepository.countByTeacher_Id(teacherId); // ✅ correct
+        long activeAssignments = assignmentRepository.countByTeacher_IdAndStatus(teacherId, "pending"); // ✅ correct
+        long studentCount = courseRepository.countStudentsByTeacherId(teacherId); // ✅ correct
+
+        List<Assignment> assignments = assignmentRepository.findTop5ByTeacher_IdOrderByDateCreationDesc(teacherId); // ✅ correct
+
+        model.addAttribute("user", user);
+        model.addAttribute("courseCount", courseCount);
+        model.addAttribute("activeAssignments", activeAssignments);
+        model.addAttribute("studentCount", studentCount);
+        model.addAttribute("assignments", assignments);
+
+        return "teacher/dashboard";
     }
 }
