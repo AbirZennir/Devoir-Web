@@ -4,6 +4,7 @@ import com.devoir.devoir.model.Assignment;
 import com.devoir.devoir.model.User;
 import com.devoir.devoir.repository.AssignmentRepository;
 import com.devoir.devoir.repository.CourseRepository;
+import com.devoir.devoir.repository.SoumissionRepository;
 import com.devoir.devoir.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class TeacherDashboardController {
     @Autowired
     private AssignmentRepository assignmentRepository;
 
+    @Autowired
+    private SoumissionRepository submissionRepository;
+
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session, Principal principal) {
         Long teacherId = (Long) session.getAttribute("userId");
@@ -41,11 +45,16 @@ public class TeacherDashboardController {
             return "redirect:/login?msg=Utilisateur introuvable";
         }
 
-        long courseCount = courseRepository.countByTeacher_Id(teacherId); // ✅ correct
-        long activeAssignments = assignmentRepository.countByTeacher_IdAndStatus(teacherId, "pending"); // ✅ correct
-        long studentCount = courseRepository.countStudentsByTeacherId(teacherId); // ✅ correct
+        long courseCount = courseRepository.countByTeacher_Id(teacherId);
+        long activeAssignments = assignmentRepository.countByTeacher_IdAndStatus(teacherId, "pending");
+        long studentCount = courseRepository.countStudentsByTeacherId(teacherId);
 
-        List<Assignment> assignments = assignmentRepository.findTop5ByTeacher_IdOrderByDateCreationDesc(teacherId); // ✅ correct
+        List<Assignment> assignments = assignmentRepository.findTop5ByTeacher_IdOrderByDateCreationDesc(teacherId);
+
+        for (Assignment assignment : assignments) {
+            int count = (int) submissionRepository.countByDevoir_Id(assignment.getId());
+            assignment.setSubmissionsCount(count);
+        }
 
         model.addAttribute("user", user);
         model.addAttribute("courseCount", courseCount);

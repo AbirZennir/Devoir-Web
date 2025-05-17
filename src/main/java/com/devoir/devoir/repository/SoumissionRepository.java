@@ -8,4 +8,7 @@ import java.util.List;
 public interface SoumissionRepository extends JpaRepository<Soumission, Long> {
     List<Soumission> findByEtudiant_Id(Long etudiantId);
     List<Soumission> findByDevoir_Id(Long devoirId);
+
+    // ✅ Méthode pour compter les soumissions liées à un devoir
+    long countByDevoir_Id(Long devoirId);
 }

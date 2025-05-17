@@ -42,6 +42,11 @@ public class TeacherAssignmentController {
         model.addAttribute("assignments", assignments.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", assignments.getTotalPages());
+
+        // ✅ Pour le sidebar.jsp
+        User teacher = userRepository.findById(teacherId).orElse(null);
+        model.addAttribute("user", teacher);
+
         return "teacher/assignments";
     }
 
@@ -53,6 +58,11 @@ public class TeacherAssignmentController {
         List<Course> courses = courseRepository.findByTeacher_Id(teacherId);
         model.addAttribute("courses", courses);
         model.addAttribute("assignment", new Assignment());
+
+        // ✅ Pour le sidebar.jsp
+        User teacher = userRepository.findById(teacherId).orElse(null);
+        model.addAttribute("user", teacher);
+
         return "teacher/create_assignment";
     }
 
@@ -83,6 +93,11 @@ public class TeacherAssignmentController {
 
         model.addAttribute("assignment", assignment);
         model.addAttribute("courses", courseRepository.findByTeacher_Id(teacherId));
+
+        // ✅ Pour le sidebar.jsp
+        User teacher = userRepository.findById(teacherId).orElse(null);
+        model.addAttribute("user", teacher);
+
         return "teacher/edit_assignment";
     }
 
@@ -112,4 +127,12 @@ public class TeacherAssignmentController {
         assignmentRepository.delete(assignment);
         return "redirect:/teacher/assignments";
     }
+    @GetMapping("/teacher/assignments")
+public String listTeacherAssignments(HttpSession session, Model model) {
+    User teacher = (User) session.getAttribute("loggedInUser");
+    List<Assignment> assignments = assignmentRepository.findByTeacher(teacher);
+    model.addAttribute("assignments", assignments);
+    return "teacher/assignments"; // ou "teacher/assignments.jsp" selon ta config
+}
+
 }

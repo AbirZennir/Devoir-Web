@@ -22,7 +22,14 @@ public class Assignment {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private User student;  // Corrigé ici pour que la requête fonctionne
+    private User student;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
+
+    @Transient
+    private int submissionsCount;
 
     // Getters et Setters
     public Long getId() { return id; }
@@ -48,16 +55,10 @@ public class Assignment {
 
     public User getStudent() { return student; }
     public void setStudent(User student) { this.student = student; }
-    @ManyToOne
-@JoinColumn(name = "teacher_id") // Assure-toi que la colonne existe en DB
-private User teacher;
 
-public User getTeacher() {
-    return teacher;
-}
+    public User getTeacher() { return teacher; }
+    public void setTeacher(User teacher) { this.teacher = teacher; }
 
-public void setTeacher(User teacher) {
-    this.teacher = teacher;
-}
-
+    public int getSubmissionsCount() { return submissionsCount; }
+    public void setSubmissionsCount(int submissionsCount) { this.submissionsCount = submissionsCount; }
 }

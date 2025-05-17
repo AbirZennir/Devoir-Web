@@ -1,4 +1,4 @@
-package com.devoir.devoir.service.impl;
+package com.devoir.devoir.service;
 
 import com.devoir.devoir.model.User;
 import com.devoir.devoir.repository.UserRepository;

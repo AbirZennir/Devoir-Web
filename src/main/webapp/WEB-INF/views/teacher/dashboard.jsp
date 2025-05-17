@@ -55,8 +55,8 @@
             <tbody>
             <c:forEach var="d" items="${assignments}">
                 <tr>
-                    <td>${d.title}</td>
-                    <td>${d.course.name}</td>
+                    <td>${d.titre}</td> <!-- ✅ corrigé ici -->
+                    <td>${d.course.nom}</td>
                     <td>${d.deadline}</td>
                     <td>${d.submissionsCount}</td>
                 </tr>

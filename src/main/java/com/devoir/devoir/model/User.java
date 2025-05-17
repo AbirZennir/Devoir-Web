@@ -38,7 +38,10 @@ public class User {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    // ✅ Relation inverse avec Assignment
+    @ManyToOne
+    @JoinColumn(name = "classe_id")
+    private Classe classe;
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignments;
 
@@ -53,7 +56,7 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters et setters
+    // Getters et Setters
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -87,6 +90,9 @@ public class User {
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { this.isActive = active; }
+
+    public Classe getClasse() { return classe; }
+    public void setClasse(Classe classe) { this.classe = classe; }
 
     public List<Assignment> getAssignments() { return assignments; }
     public void setAssignments(List<Assignment> assignments) { this.assignments = assignments; }

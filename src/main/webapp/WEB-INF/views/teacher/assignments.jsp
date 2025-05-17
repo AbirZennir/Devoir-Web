@@ -1,63 +1,58 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ include file="/WEB-INF/views/components/header.jsp" %>
-<%@ include file="/WEB-INF/views/components/sidebar.jsp" %>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Devoirs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <div class="d-flex">
+        <%@ include file="../components/sidebar.jsp" %>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>📘 Mes Devoirs</h2>
-        <a href="${pageContext.request.contextPath}/teacher/assignments/create" class="btn btn-primary">
-            + Nouveau Devoir
-        </a>
+        <div class="container mt-4">
+            <h2 class="mb-4">📝 Liste de mes devoirs</h2>
+
+            <c:if test="${empty assignments}">
+                <div class="alert alert-info">Aucun devoir trouvé.</div>
+            </c:if>
+
+            <c:if test="${not empty assignments}">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Date de création</th>
+                            <th>Deadline</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="assignment" items="${assignments}">
+                            <tr>
+                                <td>${assignment.titre}</td>
+                                <td>${assignment.description}</td>
+                                <td>${assignment.dateCreation}</td>
+                                <td>${assignment.deadline}</td>
+                                <td>
+                                    <span class="badge 
+                                        <c:choose>
+                                            <c:when test="${assignment.status eq 'pending'}">bg-warning</c:when>
+                                            <c:when test="${assignment.status eq 'completed'}">bg-success</c:when>
+                                            <c:otherwise>bg-secondary</c:otherwise>
+                                        </c:choose>">
+                                        ${assignment.status}
+                                    </span>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
+        </div>
     </div>
-
-    <c:if test="${empty assignments}">
-        <div class="alert alert-info">Aucun devoir trouvé.</div>
-    </c:if>
-
-    <c:if test="${not empty assignments}">
-        <table class="table table-bordered">
-            <thead class="table-light">
-                <tr>
-                    <th>Titre</th>
-                    <th>Description</th>
-                    <th>Date création</th>
-                    <th>Deadline</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="a" items="${assignments}">
-                    <tr>
-                        <td>${a.titre}</td>
-                        <td>${a.description}</td>
-                        <td>${a.dateCreation}</td>
-                        <td>${a.deadline}</td>
-                        <td>${a.status}</td>
-                        <td>
-                            <a href="${pageContext.request.contextPath}/teacher/assignments/edit/${a.id}" class="btn btn-sm btn-warning">
-                                ✏️ Modifier
-                            </a>
-                            <form action="${pageContext.request.contextPath}/teacher/assignments/delete/${a.id}" method="get" style="display:inline;">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?')">
-                                    🗑️ Supprimer
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </tbody>
-        </table>
-
-        <!-- Pagination -->
-        <nav>
-            <ul class="pagination justify-content-center">
-                <c:forEach begin="0" end="${totalPages - 1}" var="i">
-                    <li class="page-item ${i == currentPage ? 'active' : ''}">
-                        <a class="page-link" href="?page=${i}">${i + 1}</a>
-                    </li>
-                </c:forEach>
-            </ul>
-        </nav>
-    </c:if>
-</div>
+</body>
+</html>

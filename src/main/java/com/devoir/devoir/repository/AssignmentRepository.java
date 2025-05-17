@@ -1,6 +1,7 @@
 package com.devoir.devoir.repository;
 
 import com.devoir.devoir.model.Assignment;
+import com.devoir.devoir.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,8 @@ import java.util.List;
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     List<Assignment> findByStudent_Id(Long studentId);
     List<Assignment> findByTeacher_Id(Long teacherId);
+    List<Assignment> findByTeacher(User teacher);
+
     Page<Assignment> findByTeacher_Id(Long teacherId, Pageable pageable);
     List<Assignment> findByCourse_Teacher_Id(Long teacherId);
 

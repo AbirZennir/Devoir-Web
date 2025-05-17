@@ -29,4 +29,17 @@ public class Soumission {
     @ManyToOne
     @JoinColumn(name = "etudiant_id")
     private User etudiant;
+
+    public void setNote(int note) {
+    this.note = note;
+}
+
+public void setCommentaireProf(String commentaireProf) {
+    this.commentaireProf = commentaireProf;
+}
+
+public void setStatut(String statut) {
+    this.statut = statut;
+}
+
 }
