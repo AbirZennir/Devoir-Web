@@ -1,7 +1,8 @@
-// AssignmentRepository.java
 package com.devoir.devoir.repository;
 
 import com.devoir.devoir.model.Assignment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,18 +10,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
-
     List<Assignment> findByStudent_Id(Long studentId);
-
     List<Assignment> findByTeacher_Id(Long teacherId);
-
+    Page<Assignment> findByTeacher_Id(Long teacherId, Pageable pageable);
     List<Assignment> findByCourse_Teacher_Id(Long teacherId);
 
     Long countByStudent_Id(Long studentId);
-
-    long countByTeacher_IdAndStatus(Long teacherId, String status); // ✅ requis
-
-    List<Assignment> findTop5ByTeacher_IdOrderByDateCreationDesc(Long teacherId); // ✅ requis
+    long countByTeacher_IdAndStatus(Long teacherId, String status);
+    List<Assignment> findTop5ByTeacher_IdOrderByDateCreationDesc(Long teacherId);
 
     @Query("SELECT COUNT(a) FROM Assignment a WHERE a.status = 'submitted'")
     Long countSubmitted();

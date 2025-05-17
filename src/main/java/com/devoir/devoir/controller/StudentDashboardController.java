@@ -30,6 +30,8 @@ public class StudentDashboardController {
         model.addAttribute("noteCount", gradeRepo.countByStudent_Id(studentId));
         model.addAttribute("assignmentCount", assignmentRepo.countByStudent_Id(studentId));
         model.addAttribute("courseCount", courseRepo.countByTeacher_Id(studentId)); // ou autre selon logique réelle
+        model.addAttribute("moyenne", gradeRepo.getMoyenneByStudentId(studentId));
+
         return "student/dashboard";
     }
 }

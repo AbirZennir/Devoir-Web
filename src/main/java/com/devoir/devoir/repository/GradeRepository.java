@@ -3,6 +3,8 @@ package com.devoir.devoir.repository;
 import com.devoir.devoir.model.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 
 public interface GradeRepository extends JpaRepository<Grade, Long> {
 
@@ -11,5 +13,8 @@ Long countByMonth();
 
 
     Long countByStudent_Id(Long studentId);
+    @Query("SELECT AVG(g.note) FROM Grade g WHERE g.student.id = :studentId")
+Double getMoyenneByStudentId(@Param("studentId") Long studentId);
+
 }
 
