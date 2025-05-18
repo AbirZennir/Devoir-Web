@@ -1,5 +1,6 @@
 package com.devoir.devoir.repository;
 
+import com.devoir.devoir.model.Classe;
 import com.devoir.devoir.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Long countByRole(String role);
     List<User> findByRole(String role);
     List<User> findByRoleAndIsActive(String role, Boolean isActive);
-
+List<User> findByClasse(Classe classe);
 }

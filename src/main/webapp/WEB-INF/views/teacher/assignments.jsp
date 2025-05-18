@@ -4,29 +4,29 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mes Devoirs</title>
+    <title>Mes Devoirs - Devoir-App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <div class="d-flex">
-        <%@ include file="../components/sidebar.jsp" %>
+<div class="d-flex">
+    <%@ include file="/WEB-INF/views/components/sidebar.jsp" %>
 
-        <div class="container mt-4">
-            <h2 class="mb-4">📝 Liste de mes devoirs</h2>
+    <div class="container-fluid p-4">
+        <h2 class="mb-4"><i class="bi bi-journal-text"></i> Mes Devoirs</h2>
 
-            <c:if test="${empty assignments}">
+        <c:choose>
+            <c:when test="${empty assignments}">
                 <div class="alert alert-info">Aucun devoir trouvé.</div>
-            </c:if>
-
-            <c:if test="${not empty assignments}">
-                <table class="table table-bordered table-striped table-hover">
+            </c:when>
+            <c:otherwise>
+                <table class="table table-bordered table-hover text-center">
                     <thead class="table-dark">
                         <tr>
                             <th>Titre</th>
                             <th>Description</th>
                             <th>Date de création</th>
-                            <th>Deadline</th>
+                            <th>Date limite</th>
                             <th>Statut</th>
                         </tr>
                     </thead>
@@ -51,8 +51,9 @@
                         </c:forEach>
                     </tbody>
                 </table>
-            </c:if>
-        </div>
+            </c:otherwise>
+        </c:choose>
     </div>
+</div>
 </body>
 </html>

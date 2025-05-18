@@ -61,4 +61,15 @@ public class Assignment {
 
     public int getSubmissionsCount() { return submissionsCount; }
     public void setSubmissionsCount(int submissionsCount) { this.submissionsCount = submissionsCount; }
+
+    
+    private boolean submitted;
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
 }

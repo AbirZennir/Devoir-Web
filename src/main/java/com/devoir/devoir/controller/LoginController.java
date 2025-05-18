@@ -19,8 +19,8 @@ public class LoginController {
 
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "logout", required = false) String logout,
-                                 @RequestParam(value = "msg", required = false) String msg,
-                                 Model model) {
+                                @RequestParam(value = "msg", required = false) String msg,
+                                Model model) {
         if (logout != null) {
             model.addAttribute("msg", "Vous avez été déconnecté avec succès.");
         }
@@ -41,12 +41,9 @@ public class LoginController {
 
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             if (user.getRole().equalsIgnoreCase(role)) {
-                // ✅ Enregistrer l'utilisateur connecté dans la session
-                session.setAttribute("userId", user.getId());
-                session.setAttribute("userRole", user.getRole());
-                session.setAttribute("loggedInUser", user);
+                // ✅ Correction ici : stocker l'utilisateur dans la session
+                session.setAttribute("user", user);
 
-                // ✅ Rediriger vers le tableau de bord selon le rôle
                 switch (role.toUpperCase()) {
                     case "ADMIN":
                         return "redirect:/admin/dashboard";
@@ -54,6 +51,8 @@ public class LoginController {
                         return "redirect:/teacher/dashboard";
                     case "STUDENT":
                         return "redirect:/user/dashboard";
+                    default:
+                        break;
                 }
             } else {
                 model.addAttribute("error", "Le rôle sélectionné ne correspond pas à votre compte.");

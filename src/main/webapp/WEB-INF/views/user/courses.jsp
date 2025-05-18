@@ -1,105 +1,69 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <title>Mes cours</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6fa;
-            padding: 30px;
-        }
-
-        h2 {
-            color: #333;
-        }
-
-        .message {
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .success { color: green; }
-        .error { color: red; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 12px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #2575fc;
-            color: white;
-        }
-
-        form {
-            margin: 0;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Mes cours - Devoir-App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
+<div class="d-flex">
+    <%@ include file="/WEB-INF/views/components/sidebar.jsp" %>
 
-<h2>Mes cours</h2>
+    <div class="container-fluid p-4">
+        <h2 class="mb-4"><i class="bi bi-journal-bookmark-fill"></i> Mes cours</h2>
 
-<c:if test="${not empty success}">
-    <div class="message success">${success}</div>
-</c:if>
-<c:if test="${not empty error}">
-    <div class="message error">${error}</div>
-</c:if>
+        <!-- ✅ Affichage des messages -->
+        <c:if test="${not empty success}">
+            <div class="alert alert-success">${success}</div>
+        </c:if>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
+        </c:if>
 
-<h3>Cours validés</h3>
-<ul>
-    <c:forEach var="course" items="${acceptedCourses}">
-        <li>${course.nom}</li>
-    </c:forEach>
-</ul>
+        <!-- ✅ Liste des cours validés -->
+        <h5><i class="bi bi-check2-circle"></i> Cours validés</h5>
+        <ul class="list-group mb-4">
+            <c:forEach var="course" items="${acceptedCourses}">
+                <li class="list-group-item">${course.nom}</li>
+            </c:forEach>
+        </ul>
 
-<h3>Cours disponibles</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Description</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <c:forEach var="course" items="${availableCourses}">
-            <tr>
-                <td>${course.nom}</td>
-                <td>${course.description}</td>
-                <td>
-                    <form method="post" action="/user/courses/request">
-                        <input type="hidden" name="courseId" value="${course.id}" />
-                        <button class="btn" type="submit">Demander accès</button>
-                    </form>
-                </td>
-            </tr>
-        </c:forEach>
-    </tbody>
-</table>
-
+        <!-- ✅ Cours disponibles à demander -->
+        <h5><i class="bi bi-book"></i> Cours disponibles</h5>
+        <c:if test="${empty availableCourses}">
+            <div class="alert alert-info">Aucun cours disponible actuellement.</div>
+        </c:if>
+        <c:if test="${not empty availableCourses}">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="course" items="${availableCourses}">
+                        <tr>
+                            <td>${course.nom}</td>
+                            <td>${course.description}</td>
+                            <td>
+                                <form method="post" action="/user/courses/request">
+                                    <input type="hidden" name="courseId" value="${course.id}" />
+                                    <button class="btn btn-success btn-sm" type="submit">
+                                        <i class="bi bi-plus-circle"></i> Demander accès
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </c:if>
+    </div>
+</div>
 </body>
 </html>
